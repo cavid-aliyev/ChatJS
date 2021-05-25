@@ -6,9 +6,9 @@ const server = require("http").Server(app);
 const io = require("socket.io")(server, {
   cors: {
     origin: "http://localhost:3000",
-    credentials: true
-  }  
-});;
+    credentials: true,
+  },
+});
 
 const rooms = new Map();
 
