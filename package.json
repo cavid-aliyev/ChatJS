@@ -10,8 +10,10 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "axios": "^0.21.1",
     "express": "^4.17.1",
     "node-sass": "^6.0.0",
+    "nodemon": "^2.0.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -25,7 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "node server.js"
+    "server": "nodemon server.js"
   },
   "eslintConfig": {
     "extends": [
@@ -33,7 +35,7 @@
       "react-app/jest"
     ]
   },
-  "proxy": "http://localhost:8888",
+  "proxy": "http://localhost:9999",
   "browserslist": {
     "production": [
       ">0.2%",
