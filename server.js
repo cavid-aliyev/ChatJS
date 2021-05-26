@@ -10,6 +10,9 @@ const io = require("socket.io")(server, {
   },
 });
 
+//parsing request
+app.use(express.json());
+
 const rooms = new Map();
 
 //config web
@@ -18,7 +21,18 @@ app.get("/rooms", (req, res) => {
 });
 
 app.post("/rooms", (req, res) => {
-  console.log('Hello world');
+  const { roomId, userName } = req.body;
+  if (!rooms.has(roomId)) {
+    rooms.set(
+      roomId,
+      new Map([
+        ["users", new Map()],
+        ["messages", []],
+      ])
+    );
+  }
+
+  res.send();
 });
 
 //config socket

@@ -1,19 +1,26 @@
 import React from "react";
-import axios from 'axios'
+import axios from "axios";
 
-const JoinBlock: React.FC = () => {
+interface IJoin {
+  onLogin: () => void;
+}
+
+const JoinBlock: React.FC<IJoin> = ({ onLogin }) => {
   const [roomId, setRoomId] = React.useState("");
   const [userName, setUserName] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const onEnter = () => {
-    if(!roomId || !userName){
-      return alert('Incorrect inputs')
+  const onEnter = async () => {
+    if (!roomId || !userName) {
+      return alert("Incorrect inputs");
     }
-    axios.post('./rooms', {
+    setIsLoading(true);
+    await axios.post("./rooms", {
       roomId,
-      userName
-    })
-  }
+      userName,
+    });
+    onLogin();
+  };
 
   return (
     <div className="join-block">
@@ -29,7 +36,13 @@ const JoinBlock: React.FC = () => {
         value={userName}
         onChange={(event) => setUserName(event.target.value)}
       />
-      <button onClick={onEnter} className="btn btn-success">ENTER</button>
+      <button
+        disabled={isLoading}
+        onClick={onEnter}
+        className="btn btn-success"
+      >
+        {isLoading ? "Loading...." : "Enter"}
+      </button>
     </div>
   );
 };
