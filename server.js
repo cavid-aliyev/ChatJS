@@ -13,6 +13,7 @@ const io = require("socket.io")(server, {
 //parsing request
 app.use(express.json());
 
+//db
 const rooms = new Map();
 
 //config web
@@ -37,6 +38,14 @@ app.post("/rooms", (req, res) => {
 
 //config socket
 io.on("connection", (socket) => {
+  socket.on("ROOM_JOIN", ({ roomId, userName }) => {
+    //join the room that id is typed
+    socket.join(roomId);
+    rooms.get(roomId).get("users").set(socket.id, userName);
+    const users = rooms.get(roomId).get("users").values();
+    //request all rooms except me bcs I should see other users in my chat
+    socket.to(roomId).broadcats.emit("ROOM_JOINED", users);
+  });
   console.log("user connected", socket.id);
 });
 

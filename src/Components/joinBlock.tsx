@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 interface IJoin {
-  onLogin: () => void;
+  onLogin: (obj: {roomId: string, userName: string}) => void;
 }
 
 const JoinBlock: React.FC<IJoin> = ({ onLogin }) => {
@@ -14,12 +14,13 @@ const JoinBlock: React.FC<IJoin> = ({ onLogin }) => {
     if (!roomId || !userName) {
       return alert("Incorrect inputs");
     }
-    setIsLoading(true);
-    await axios.post("./rooms", {
+    const obj = {
       roomId,
       userName,
-    });
-    onLogin();
+    }
+    setIsLoading(true);
+    await axios.post("./rooms", obj);
+    onLogin(obj);
   };
 
   return (
