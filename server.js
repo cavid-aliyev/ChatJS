@@ -46,6 +46,12 @@ io.on("connection", (socket) => {
     //request all rooms except me bcs I should see other users in my chat
     socket.to(roomId).broadcats.emit("ROOM_JOINED", users);
   });
+
+  socket.on('disconnected', ()=>{
+    rooms.forEach((value, roomId) => {
+      if(value.get('users').delete(socket.id))
+    });
+  })
   console.log("user connected", socket.id);
 });
 
