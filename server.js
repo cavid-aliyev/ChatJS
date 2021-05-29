@@ -17,8 +17,15 @@ app.use(express.json());
 const rooms = new Map();
 
 //config web
-app.get("/rooms", (req, res) => {
-  res.json(rooms);
+app.get("/rooms/:id", (req, res) => {
+  const { id: roomId } = req.params;
+  const obj = rooms.has(roomId)
+    ? {
+        users: [...rooms.get(roomId).get("users").values()],
+        messages: [...rooms.get(roomId).get("messages").values()],
+      }
+    : { users: [], messages: [] };
+  res.json(obj);
 });
 
 app.post("/rooms", (req, res) => {
@@ -32,26 +39,36 @@ app.post("/rooms", (req, res) => {
       ])
     );
   }
-
   res.send();
 });
 
 //config socket
 io.on("connection", (socket) => {
-  socket.on("ROOM_JOIN", ({ roomId, userName }) => {
-    //join the room that id is typed
+  socket.on("ROOM:JOIN", ({ roomId, userName }) => {
     socket.join(roomId);
     rooms.get(roomId).get("users").set(socket.id, userName);
-    const users = rooms.get(roomId).get("users").values();
-    //request all rooms except me bcs I should see other users in my chat
-    socket.to(roomId).broadcats.emit("ROOM_JOINED", users);
+    const users = [...rooms.get(roomId).get("users").values()];
+    socket.to(roomId).broadcast.emit("ROOM:SET_USERS", users);
   });
 
-  socket.on('disconnected', ()=>{
+  socket.on("ROOM:NEW_MESSAGE", ({ roomId, userName, text }) => {
+    const obj = {
+      userName,
+      text,
+    };
+    rooms.get(roomId).get("messages").push(obj);
+    socket.to(roomId).broadcast.emit("ROOM:NEW_MESSAGE", obj);
+  });
+
+  socket.on("disconnect", () => {
     rooms.forEach((value, roomId) => {
-      if(value.get('users').delete(socket.id))
+      if (value.get("users").delete(socket.id)) {
+        const users = [...value.get("users").values()];
+        socket.to(roomId).broadcast.emit("ROOM:SET_USERS", users);
+      }
     });
-  })
+  });
+
   console.log("user connected", socket.id);
 });
 

@@ -1,23 +1,9 @@
 import React from "react";
 import { socket } from "../socket";
 
-interface IChat {
-  users: string[];
-  messages: any;
-  userName: string;
-  roomId: string | number;
-  onAddMessage: any;
-}
-
-const Chat: React.FC<IChat> = ({
-  users,
-  messages,
-  userName,
-  roomId,
-  onAddMessage,
-}) => {
+const Chat = ({ users, messages, userName, roomId, onAddMessage }) => {
   const [messageValue, setMessageValue] = React.useState("");
-  const messagesRef = React.useRef<string>(null);
+  const messagesRef = React.useRef(null);
 
   const onSendMessage = () => {
     socket.emit("ROOM:NEW_MESSAGE", {
@@ -36,9 +22,9 @@ const Chat: React.FC<IChat> = ({
   return (
     <div className="chat">
       <div className="chat-users">
-        Room: <b>{roomId}</b>
+        Комната: <b>{roomId}</b>
         <hr />
-        <b>Online ({users.length}):</b>
+        <b>Онлайн ({users.length}):</b>
         <ul>
           {users.map((name, index) => (
             <li key={name + index}>{name}</li>
@@ -47,7 +33,7 @@ const Chat: React.FC<IChat> = ({
       </div>
       <div className="chat-messages">
         <div ref={messagesRef} className="messages">
-          {messages.map((message: any) => (
+          {messages.map((message) => (
             <div className="message">
               <p>{message.text}</p>
               <div>
@@ -61,14 +47,14 @@ const Chat: React.FC<IChat> = ({
             value={messageValue}
             onChange={(e) => setMessageValue(e.target.value)}
             className="form-control"
-            rows={3}
+            rows="3"
           ></textarea>
           <button
             onClick={onSendMessage}
             type="button"
             className="btn btn-primary"
           >
-            Send
+            Отправить
           </button>
         </form>
       </div>

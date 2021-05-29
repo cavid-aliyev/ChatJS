@@ -8,17 +8,25 @@ export const reducer = (state, action) => {
         roomId: action.payload.roomId,
       };
 
-      case "SET_USERS":
+    case "SET_DATA":
       return {
         ...state,
-        users: action.payload
+        users: action.payload.users,
+        messages: action.payload.messages,
       };
 
-      case "SET_MESSAGES":
+    case "SET_USERS":
       return {
         ...state,
-        messages: action.payload
+        users: action.payload,
       };
+
+    case "NEW_MESSAGE":
+      return {
+        ...state,
+        messages: [...state.messages, action.payload],
+      };
+
     default:
       return state;
   }
